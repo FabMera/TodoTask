@@ -17,10 +17,11 @@ const App = () => {
     };
 
     const updateTask = (id) => {
-        const updateTarea = todos.map((item) =>
-            item.id === id ? { ...item, completed: !item.completed } : item
+        setTodos(
+            todos.map((item) =>
+                item.id === id ? { ...item, completed: !item.completed } : item
+            )
         );
-        setTodos(updateTarea);
     };
 
     const computedTasks = () => {
@@ -32,6 +33,24 @@ const App = () => {
         });
         setTodos(clearTarea);
     };
+    const [filter, setFilter] = useState("all");
+
+    const filterTasks = () => {
+        switch (filter) {
+            case "all":
+                return todos;
+            case "active":
+                return todos.filter((item) => !item.completed);
+            case "completed":
+                return todos.filter((item) => item.completed);
+            default:
+                return todos;
+        }
+    };
+
+    const filtradoTareas = (filter) => {
+        setFilter(filter);
+    };
 
     return (
         <div className=" min-h-screen bg-gray-100 bg-[url('./assets/images/bg-mobile-light.jpg')] bg-contain bg-no-repeat">
@@ -40,7 +59,7 @@ const App = () => {
                 <Formulario setTodos={setTodos} todos={todos} />
 
                 <ListaTareas
-                    todos={todos}
+                    todos={filterTasks()}
                     deleteTask={deleteTask}
                     updateTask={updateTask}
                 />
@@ -50,7 +69,7 @@ const App = () => {
                     computedTasksCompleted={computedTasksCompleted}
                 />
 
-                <TareasFilter />
+                <TareasFilter filtradoTareas={filtradoTareas} filter={filter} />
             </main>
             <footer className="mt-8 text-center">
                 Drag and drop to reorder list
